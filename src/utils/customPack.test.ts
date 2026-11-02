@@ -65,7 +65,7 @@ test('config keeps theme, size, designs, finish and the surprise', () => {
 
 test('cart: packs merge, price from config, saved and restored safely', () => {
   const config = toPackConfig(draft(), ids);
-  let cart: CartItem[] = cartReducer([], { type: 'add', productId: 'stk-001', quantity: 1 });
+  let cart: CartItem[] = cartReducer([], { type: 'add', productId: 'stk-real-001', quantity: 1 });
   cart = cartReducer(cart, { type: 'addPack', pack: config, quantity: 1 });
   cart = cartReducer(cart, { type: 'addPack', pack: { ...config, designIds: [...config.designIds].reverse() }, quantity: 1 });
   assert.equal(cart.filter(isPackItem).length, 1);
@@ -77,7 +77,7 @@ test('cart: packs merge, price from config, saved and restored safely', () => {
   assert.equal(line.unitPrice, packPrice(5, 'standard'));
   assert.equal(line.lineTotal, 2 * packPrice(5, 'standard')!);
   assert.equal(line.designs.length, 5);
-  assert.equal(summary.subtotal, 20 + line.lineTotal);
+  assert.equal(summary.subtotal, getProductById('stk-real-001')!.price + line.lineTotal);
 
   // Packs are only ids, so they're saved; a tampered or outdated pack is dropped on load.
   const restored = parseStoredCart(serializeCart(cart), () => true, (p) => toPackConfigSafe(p));

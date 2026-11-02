@@ -56,7 +56,7 @@ test('filter by type and vibe uses real data', () => {
 });
 
 test('search matches names, tags and pack contents', () => {
-  assert.ok(filterAndSort({ ...emptyFilters, query: 'chai' }).some((p) => p.slug === 'chai-first'));
+  assert.ok(filterAndSort({ ...emptyFilters, query: 'shinobi' }).some((p) => p.slug === 'stk-anime-001-shadow-shinobi-die-cut'));
   // "Little Bug" is only inside the Dev Mode sheet's contents
   assert.ok(filterAndSort({ ...emptyFilters, query: 'little bug' }).some((p) => p.slug === 'dev-mode-sheet'));
   assert.equal(filterAndSort({ ...emptyFilters, query: 'zzzz-nothing' }).length, 0);
@@ -84,7 +84,7 @@ test('URL params round-trip and ignore junk', () => {
 });
 
 test('related products exclude the product itself and stay in category', () => {
-  const p = getProductBySlug('chai-first')!;
+  const p = getProductBySlug('stk-anime-001-shadow-shinobi-die-cut')!;
   const related = getRelatedProducts(p);
   assert.ok(related.length > 0);
   assert.ok(related.every((r) => r.id !== p.id && r.category === 'stickers'));

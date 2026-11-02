@@ -19,7 +19,7 @@ export function AnimatedStickerHero() {
         <div className="relative max-w-xl">
           <div className="inline-flex items-center gap-2 mb-3 px-3.5 py-1 rounded-full border border-mint/20 bg-paper-deep/80 text-mint text-[11px] font-mono tracking-widest uppercase backdrop-blur-sm shadow-sm">
             <span className="size-1.5 rounded-full bg-cinema-red" />
-            [ ARCHIVE 2026 // EDITION 01 — HYD STUDIO ]
+            [ ARCHIVE 2026 // EDITION 01 — STUDIO ARCHIVE ]
           </div>
           <h1 id="hero-title" className="cinema-hero-title mt-3 font-hero text-[4.4rem] leading-[0.86] tracking-[0.005em] uppercase sm:text-[6.5rem] lg:text-[7.4rem]">
             <span className="block">Stick your</span>

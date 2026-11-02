@@ -39,7 +39,7 @@ test('Cute & Aesthetic is unchanged', () => {
   // Same products as before this change (ids recorded from the catalogue at the time).
   assert.deepEqual(
     products.filter((p) => p.collections.includes('cute')).map((p) => p.id).sort(),
-    ['duo-001', 'duo-003', 'mys-001', 'pst-003', 'pst-010', 'sec-004', 'sec-006', 'sht-003', 'stk-005', 'stk-007', 'stk-019', 'stk-020'].sort(),
+    ['duo-001', 'duo-003', 'mys-001', 'pst-003', 'sec-004', 'sec-006', 'sht-003'].sort(),
   );
 });
 

@@ -17,7 +17,7 @@ export function LiveOrderCheckout({onCreated}:{onCreated?:(order:OrderReceipt)=>
  const {lines,clearCart}=useCart();
  const [addresses,setAddresses]=useState<Address[]>([]);
  const [selected,setSelected]=useState('');
- const [newAddress,setNewAddress]=useState({recipient:'',line1:'',city:'Hyderabad',state:'Telangana',postalCode:''});
+ const [newAddress,setNewAddress]=useState({recipient:'',line1:'',city:'',state:'',postalCode:''});
  const [saving,setSaving]=useState(false);
  const [working,setWorking]=useState(false);
  const [error,setError]=useState('');
@@ -34,7 +34,7 @@ export function LiveOrderCheckout({onCreated}:{onCreated?:(order:OrderReceipt)=>
   try{
    const saved=await request<Address>('/api/me/addresses',{method:'POST',body:JSON.stringify({...newAddress,isDefault:!addresses.length})});
    setAddresses(a=>[...a,saved]);setSelected(saved.id);
-   setNewAddress({recipient:'',line1:'',city:'Hyderabad',state:'Telangana',postalCode:''});
+   setNewAddress({recipient:'',line1:'',city:'',state:'',postalCode:''});
   }catch(e){setError(e instanceof Error?e.message:'Could not save address');}finally{setSaving(false);}
  }
  async function prepare(){

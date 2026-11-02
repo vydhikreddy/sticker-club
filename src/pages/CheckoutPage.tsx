@@ -176,7 +176,7 @@ export function CheckoutPage() {
               {(
                 [
                   { value: 'pickup', title: 'Campus pickup', body: 'Collect from an agreed spot on campus. Details to be confirmed.' },
-                  { value: 'delivery', title: 'Delivery', body: 'Delivered to your address in Hyderabad. Charges to be confirmed.' },
+                  { value: 'delivery', title: 'Delivery', body: 'Delivered directly to your doorstep pan-India.' },
                 ] as const
               ).map((o) => (
                 <label

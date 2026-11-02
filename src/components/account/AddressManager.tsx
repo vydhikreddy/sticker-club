@@ -2,7 +2,7 @@ import {useEffect,useState,type FormEvent} from 'react';
 import {useAuth} from '../../context/AuthContext';
 type Address={id:string;recipient:string;line1:string;line2:string|null;city:string;state:string;postalCode:string;isDefault:boolean};
 type Form={recipient:string;line1:string;line2:string;city:string;state:string;postalCode:string};
-const blank:Form={recipient:'',line1:'',line2:'',city:'Hyderabad',state:'Telangana',postalCode:''};
+const blank:Form={recipient:'',line1:'',line2:'',city:'',state:'',postalCode:''};
 export function AddressManager(){
  const {user,request}=useAuth();
  const [addresses,setAddresses]=useState<Address[]>([]);

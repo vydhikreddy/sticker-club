@@ -20,7 +20,7 @@ export const brand = {
   tagline: 'Stick it. Hang it. Own it.',
   description:
     'Original stickers and posters for students: mini stickers, sticker sheets, themed packs, wall posters and ready-made wall packs.',
-  city: 'Hyderabad',
+  city: '',
 
   /**
    * The public website address once deployed, e.g. 'https://stickerclub.in'.

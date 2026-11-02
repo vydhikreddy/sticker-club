@@ -5,7 +5,7 @@ import { collections, getCollection, posterTypes, productTypeLabels, stickerType
 import { products } from '../data/products';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { Link, useSearchParams } from '../router/router';
-import type { Category, CollectionId, ProductType, StickerDesign } from '../types/product';
+import type { Category, CollectionId, ProductType } from '../types/product';
 import {
   allSizes,
   emptyFilters,
@@ -26,7 +26,6 @@ import {
 } from '../utils/catalogue';
 import { formatPrice, pluralise } from '../utils/format';
 import { ProductImage } from '../components/art/ProductArt';
-import { StickerSvg } from '../components/art/Sticker';
 import { motifs } from '../components/art/motifs';
 import { ProductGrid } from '../components/product/ProductCard';
 import { Breadcrumbs } from '../components/ui/Breadcrumbs';
@@ -69,18 +68,12 @@ function typesFor(category: Category | null): ProductType[] {
 // Intro (sticker page only)
 // ---------------------------------------------------------------------------
 
-/** Takes a sticker design from the catalogue so the intro art always matches real products. */
-function designOf(slug: string): StickerDesign | undefined {
-  const art = getProductBySlug(slug)?.art;
-  return art?.kind === 'single' ? art.design : undefined;
-}
-
 const introStickers = [
-  { slug: 'seventy-five-percent-club', className: 'left-[2%] top-[6%] w-[34%] -rotate-12' },
-  { slug: 'works-on-my-machine', className: 'right-[0%] top-[0%] w-[46%] rotate-6' },
-  { slug: 'chai-first', className: 'left-[30%] top-[34%] w-[34%] rotate-3' },
-  { slug: 'sleepy-cloud', className: 'right-[4%] bottom-[2%] w-[28%] rotate-12' },
-  { slug: 'pixel-heart', className: 'left-[6%] bottom-[4%] w-[24%] -rotate-6' },
+  { slug: 'stk-anime-001-shadow-shinobi-die-cut', className: 'left-[2%] top-[6%] w-[34%] -rotate-12' },
+  { slug: 'stk-anime-002-cyberpunk-ronin-die-cut', className: 'right-[0%] top-[0%] w-[46%] rotate-6' },
+  { slug: 'stk-anime-003-spirit-guardian-die-cut', className: 'left-[30%] top-[34%] w-[34%] rotate-3' },
+  { slug: 'stk-anime-004-titan-slayer-die-cut', className: 'right-[4%] bottom-[2%] w-[28%] rotate-12' },
+  { slug: 'stk-anime-005-neon-alchemist-die-cut', className: 'left-[6%] bottom-[4%] w-[24%] -rotate-6' },
 ];
 
 function StickerIntro() {
@@ -106,10 +99,10 @@ function StickerIntro() {
         {/* Illustration: hidden on small screens so the catalogue stays close to the top. */}
         <div className="relative hidden aspect-[4/3] w-full lg:block" aria-hidden>
           {introStickers.map((s) => {
-            const design = designOf(s.slug);
-            return design ? (
-              <div key={s.slug} className={`absolute ${s.className} drop-shadow-[0_6px_6px_rgba(18,18,18,0.18)]`}>
-                <StickerSvg design={design} className="h-auto w-full" />
+            const product = getProductBySlug(s.slug);
+            return product ? (
+              <div key={s.slug} className={`absolute ${s.className} drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]`}>
+                <ProductImage product={product} className="h-auto w-full rounded-2xl" />
               </div>
             ) : null;
           })}
@@ -176,13 +169,13 @@ function CategorySwitch({ f }: { f: CatalogueFilters }) {
 }
 
 const formatRepresentatives: Partial<Record<ProductType, string>> = {
-  single: 'chai-first',
+  single: 'stk-anime-001-shadow-shinobi-die-cut',
   sheet: 'campus-survival-sheet',
   pack: 'garage-pack',
   mystery: 'mystery-pack',
   duo: 'window-cat-day-and-night',
   secret: 'main-character-energy',
-  poster: 'redline-poster',
+  poster: 'pst-anime-001-shinobi-legends',
   'poster-set': 'desk-wall-pack',
 };
 

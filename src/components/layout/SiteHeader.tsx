@@ -42,7 +42,7 @@ function Wordmark() {
           {brand.name}
         </span>
         <span className="text-[10px] font-mono tracking-widest text-mint uppercase leading-tight">
-          STUDIO · HYD
+          ORIGINAL STUDIO
         </span>
       </div>
     </Link>
@@ -232,7 +232,7 @@ export function SiteHeader() {
     hoverTimer.current = window.setTimeout(() => {
       setHoveredId(null);
       setOpenMega(null);
-    }, 180);
+    }, 240);
   };
 
   const handleNavClick = (item: NavItemConfig) => {
@@ -246,6 +246,7 @@ export function SiteHeader() {
   return (
     <header
       className="sticky top-2 z-40 mx-auto max-w-7xl px-3 transition-all sm:top-3.5 sm:px-6"
+      onMouseEnter={() => window.clearTimeout(hoverTimer.current)}
       onMouseLeave={handleMouseLeave}
     >
       {/* Main Glass Navigation Capsule */}
@@ -427,8 +428,12 @@ export function SiteHeader() {
       {activeMega && (
         <div
           id="mega-panel"
-          className="fade-in absolute inset-x-3 sm:inset-x-6 top-[calc(100%+0.5rem)] hidden rounded-2xl border border-mint/20 bg-paper-deep/95 shadow-2xl backdrop-blur-2xl lg:block overflow-hidden z-50"
-          onMouseEnter={() => setOpenMega(activeMega.id)}
+          className="fade-in absolute inset-x-3 sm:inset-x-6 top-[calc(100%+0.5rem)] hidden rounded-2xl border border-mint/20 bg-paper-deep/95 shadow-2xl backdrop-blur-2xl lg:block overflow-hidden z-50 before:absolute before:-top-3 before:inset-x-0 before:h-3 before:content-['']"
+          onMouseEnter={() => {
+            window.clearTimeout(hoverTimer.current);
+            setHoveredId(activeMega.id);
+            setOpenMega(activeMega.id);
+          }}
           onMouseLeave={handleMouseLeave}
         >
           <MegaPanel menu={activeMega} />
@@ -559,7 +564,7 @@ export function SiteHeader() {
               >
                 {user ? `Signed in as ${user.name}` : 'Log in to your account →'}
               </Link>
-              <span className="text-ink-soft font-mono">HYD · DROP 01</span>
+              <span className="text-ink-soft font-mono">STUDIO · DROP 01</span>
             </div>
           </div>
         </nav>

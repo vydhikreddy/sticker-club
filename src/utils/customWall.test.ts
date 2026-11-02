@@ -79,19 +79,19 @@ test('builder: fill, clear, select, complete', () => {
   let s = initialBuilderState('compact');
   assert.equal(s.fills.length, 5);
   assert.ok(!isComplete(s));
-  s = builderReducer(s, { type: 'setFill', index: 0, fill: cat('pst-001') });
+  s = builderReducer(s, { type: 'setFill', index: 0, fill: cat('pst-real-001') });
   s = builderReducer(s, { type: 'select', index: 99 });
   assert.equal(s.selected, 4, 'select is clamped');
   assert.equal(filledCount(s), 1);
   s = builderReducer(s, { type: 'clearFill', index: 0 });
   assert.equal(filledCount(s), 0);
-  for (let i = 0; i < 5; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-004') });
+  for (let i = 0; i < 5; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-real-004') });
   assert.ok(isComplete(s));
 });
 
 test('builder: switching layouts keeps images in order and explains what changed', () => {
   let s = initialBuilderState('classic'); // 8 slots
-  for (let i = 0; i < 8; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-005') });
+  for (let i = 0; i < 8; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-real-005') });
   s = builderReducer(s, { type: 'select', index: 7 });
   s = builderReducer(s, { type: 'chooseLayout', layoutId: 'compact' }); // 5 slots
   assert.equal(s.fills.length, 5);
@@ -105,7 +105,7 @@ test('builder: switching layouts keeps images in order and explains what changed
 
 test('builder: fit only applies to the customer’s own images', () => {
   let s = initialBuilderState('compact');
-  s = builderReducer(s, { type: 'setFill', index: 0, fill: cat('pst-001') });
+  s = builderReducer(s, { type: 'setFill', index: 0, fill: cat('pst-real-001') });
   const before = s;
   s = builderReducer(s, { type: 'setFit', index: 0, fit: { mode: 'contain', focusX: 0, focusY: 0 } });
   assert.equal(s, before, 'catalogue fills have no fit');
@@ -118,7 +118,7 @@ test('builder: fit only applies to the customer’s own images', () => {
 test('toWallConfig requires a complete wall and rights confirmation for own images', () => {
   let s = initialBuilderState('compact');
   assert.throws(() => toWallConfig(s, true));
-  for (let i = 0; i < 4; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-001') });
+  for (let i = 0; i < 4; i++) s = builderReducer(s, { type: 'setFill', index: i, fill: cat('pst-real-001') });
   s = builderReducer(s, { type: 'setFill', index: 4, fill: url('https://example.com/me.png') });
   assert.ok(usesOwnImages(s));
   assert.throws(() => toWallConfig(s, false), /rights/);

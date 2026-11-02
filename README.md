@@ -1,6 +1,6 @@
 # Sticker Club — storefront prototype
 
-A mobile-first storefront for a college-first **sticker** brand in Hyderabad, with posters as a
+A mobile-first storefront for a college-first **sticker** brand, with posters as a
 secondary line and a set of collectible features (mystery packs, build-your-own packs, duos,
 secret messages, rarity, a collector passport and community voting).
 **Frontend only:** the catalogue, search, filters, cart and checkout preview all work in the

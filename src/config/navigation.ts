@@ -89,7 +89,7 @@ export const originalNavItems: NavItemConfig[] = [
     id: 'about',
     label: 'About',
     to: '/about',
-    subtitle: 'Made in Hyderabad',
+    subtitle: 'Our Studio Story',
     badge: 'Our Story',
     image: '/category-art/gifts.webp',
     iconType: 'about',
@@ -111,8 +111,8 @@ export const megaMenus: MegaMenu[] = [
       { label: 'Secret messages', to: '/secret-messages', note: 'Sticker + sealed message card' },
       { label: 'Create your own stickers', to: '/create-your-stickers', note: 'Your image, made into a sticker' },
     ],
-    promoSlug: 'mystery-pack',
-    promoLabel: 'New · 5 guaranteed + 1 mystery',
+    promoSlug: 'stk-anime-001-shadow-shinobi-die-cut',
+    promoLabel: 'Featured 600 Die-Cuts',
   },
   {
     id: 'posters',
@@ -128,8 +128,8 @@ export const megaMenus: MegaMenu[] = [
       title: 'Shop by size',
       links: allSizes().map((s) => ({ label: s, to: shopUrl({ category: 'posters', sizes: [s] }) })),
     },
-    promoSlug: 'desk-wall-pack',
-    promoLabel: 'Fill a wall',
+    promoSlug: 'pst-anime-001-shinobi-legends',
+    promoLabel: 'Featured 166 Wall Prints',
   },
 ];
 

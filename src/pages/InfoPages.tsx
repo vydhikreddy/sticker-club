@@ -85,7 +85,7 @@ const faqs: { q: string; a: ReactNode }[] = [
   { q: 'What size and material are the stickers?', a: 'We’re still testing samples from suppliers, so sizes, materials and finishes aren’t confirmed. We’ll list them on each product once they are — we won’t claim things like waterproofing until we’ve tested it.' },
   { q: 'What poster sizes are there?', a: 'Single posters come in A5 (14.8 × 21 cm), A4 (21 × 29.7 cm) and A3 (29.7 × 42 cm). Wall packs and sets are A4. Paper type and finish will be confirmed after sampling.' },
   { q: 'How do I put posters up without damaging the wall?', a: 'Removable mounting putty or removable tape is usually the gentlest option for hostel and PG walls. Check what your accommodation allows first.' },
-  { q: 'How will I get my order?', a: 'We plan to start with pickup on campus and simple local delivery in Hyderabad. Exact arrangements and any charges will be confirmed before launch.' },
+  { q: 'How will I get my order?', a: 'We offer pan-India delivery. Orders are safely packaged and dispatched directly to your doorstep.' },
   { q: 'Are the prices final?', a: 'No. The prices shown are test prices we’re using to learn what feels fair. They may change before launch.' },
   { q: 'Will you make custom stickers or photo posters?', a: 'Maybe later. A personalised photo collage is on our list, but we want to get the core range right first.' },
   { q: 'Are the designs original?', a: 'Yes. Every design is our own. We don’t use logos, characters or artwork from other brands, shows or games.' },
