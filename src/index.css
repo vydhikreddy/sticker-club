@@ -208,6 +208,36 @@
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .fade-in { animation: fade-in 180ms ease-out; }
 
+/* Interactive expanding navigation bar animations */
+@keyframes nav-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-nav-slide-up {
+  animation: nav-slide-up 240ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.nav-expand-spring {
+  transition: width 340ms cubic-bezier(0.25, 1, 0.5, 1),
+              background-color 220ms ease,
+              border-color 220ms ease,
+              box-shadow 260ms ease,
+              transform 220ms ease;
+  will-change: width, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-expand-spring {
+    transition: none !important;
+  }
+}
+
 /*
   SHOP BY VIBE MOTION (src/components/vibes/ShopByVibe.tsx)
   - .reveal-item: invisible while its list is data-reveal="pending"; rises in once,
