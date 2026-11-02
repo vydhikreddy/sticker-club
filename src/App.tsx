@@ -5,7 +5,6 @@ import { Layout } from './components/layout/Layout';
 import { RouterProvider, Routes, type RouteDef } from './router/router';
 import { HomePage } from './pages/HomePage';
 import { ShopPage } from './pages/ShopPage';
-import { ShopByVideoPage } from './pages/ShopByVideoPage';
 import { ProductPage } from './pages/ProductPage';
 import { VibesPage } from './pages/VibesPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -23,7 +22,6 @@ import { AboutPage, ContactPage, FaqPage, NotFoundPage, PolicyPage } from './pag
 const routes: RouteDef[] = [
   { path: '/', element: <HomePage /> },
   { path: '/shop', element: <ShopPage /> },
-  { path: '/shop-by-video', element: <ShopByVideoPage /> },
   { path: '/vibes', element: <VibesPage /> },
   { path: '/product/:slug', element: <ProductPage /> },
   { path: '/create-your-stickers', element: <CreateStickersPage /> },

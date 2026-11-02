@@ -36,7 +36,6 @@ export function Footer() {
           { label: 'Wall packs & sets', to: shopUrl({ types: ['poster-set'] }) },
         ]
       : []),
-    { label: 'Shop by Video', to: '/shop-by-video' },
     { label: 'Shop everything', to: '/shop' },
   ];
   const collectLinks = [

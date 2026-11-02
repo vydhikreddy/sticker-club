@@ -1,6 +1,7 @@
 /**
  * MAIN MENU & EXPANDING NAVIGATION
- * Interactive expanding navigation items with rich metadata and sub-destinations.
+ * Original navigation structure (Stickers, Posters, Collectibles, Create your own, Vibes, About)
+ * enhanced with rich visual metadata and expanding-card animations.
  */
 import { collections } from '../data/collections';
 import { allSizes, shopUrl } from '../utils/catalogue';
@@ -15,82 +16,74 @@ export interface MenuLink {
 export interface MegaMenu {
   id: Category;
   label: string;
+  /** Link for the menu's own "shop all" entry. */
   allLink: MenuLink;
   formats: MenuLink[];
+  /** Small pill links, e.g. sizes. */
   pills?: { title: string; links: MenuLink[] };
+  /** Product slug shown as a picture card in the menu. */
   promoSlug: string;
   promoLabel: string;
 }
 
-export interface ExpandingNavItem {
+export interface NavItemConfig {
   id: string;
   label: string;
   to: string;
   subtitle: string;
   badge?: string;
   image: string;
-  iconType: 'home' | 'shop' | 'video' | 'vibes' | 'about' | 'contact';
-  sublinks?: MenuLink[];
+  iconType: 'stickers' | 'posters' | 'collectibles' | 'create' | 'vibes' | 'about';
+  isMegaMenu?: boolean;
 }
 
-export const expandingNavItems: ExpandingNavItem[] = [
+export const originalNavItems: NavItemConfig[] = [
   {
-    id: 'home',
-    label: 'Home',
-    to: '/',
-    subtitle: 'Drops & Essentials',
-    badge: 'Drop 01',
-    image: '/category-art/stickers.webp',
-    iconType: 'home',
-  },
-  {
-    id: 'shop',
-    label: 'Shop',
-    to: '/shop',
-    subtitle: '760+ Stickers & Art',
-    badge: '760+ Items',
+    id: 'stickers',
+    label: 'Stickers',
+    to: shopUrl({ category: 'stickers' }),
+    subtitle: '600+ Contour Die-Cuts',
+    badge: '600 Designs',
     image: '/category-art/stickers-cluster.jpg',
-    iconType: 'shop',
-    sublinks: [
-      { label: 'All Stickers', to: shopUrl({ category: 'stickers' }), note: '600 contour die-cuts' },
-      { label: 'All Posters', to: shopUrl({ category: 'posters' }), note: 'A5, A4, A3 wall prints' },
-      { label: 'Build Your Pack', to: '/build-your-pack', note: 'Pick 5 or 10 + surprise' },
-      { label: 'Build Your Wall', to: '/build-your-wall', note: 'Custom gallery walls' },
-      { label: 'Create Custom Stickers', to: '/create-your-stickers', note: 'From 1 piece · custom cut' },
-      { label: 'Collectibles & Mystery', to: '/collectibles', note: 'Duos, mystery & passport' },
-    ],
+    iconType: 'stickers',
+    isMegaMenu: true,
   },
   {
-    id: 'video',
-    label: 'Shop by Video',
-    to: '/shop-by-video',
-    subtitle: 'Reels & Real Looks',
-    badge: 'Live',
+    id: 'posters',
+    label: 'Posters',
+    to: shopUrl({ category: 'posters' }),
+    subtitle: 'A5 · A4 · A3 Wall Art',
+    badge: '166 Prints',
     image: '/category-art/posters-cluster.jpg',
-    iconType: 'video',
-    sublinks: [
-      { label: 'Interactive Video Feed', to: '/shop-by-video', note: 'Watch & tap to buy' },
-      { label: 'MacBook Sticker Bombing', to: '/shop-by-video', note: '20-sticker laptop setup' },
-      { label: 'Hostel Room Wall Tour', to: '/shop-by-video', note: 'Anime gallery makeover' },
-      { label: 'Hydro Flask Water Test', to: '/shop-by-video', note: 'Waterproof scratch demo' },
-    ],
+    iconType: 'posters',
+    isMegaMenu: true,
+  },
+  {
+    id: 'collectibles',
+    label: 'Collectibles',
+    to: '/collectibles',
+    subtitle: 'Mystery & Duos',
+    badge: 'Series 01',
+    image: '/category-art/stickers.webp',
+    iconType: 'collectibles',
+  },
+  {
+    id: 'create',
+    label: 'Create',
+    to: '/create-your-stickers',
+    subtitle: 'Your Own Design',
+    badge: 'From 1 pc',
+    image: '/category-art/custom.webp',
+    iconType: 'create',
   },
   {
     id: 'vibes',
     label: 'Vibes',
     to: '/vibes',
-    subtitle: 'Anime, Cinema & Tech',
+    subtitle: 'Anime, Cinema & Gaming',
     badge: 'Trending',
     image: '/products/posters/pst-anime-001.webp',
     iconType: 'vibes',
-    sublinks: [
-      { label: 'Anime & Manga', to: shopUrl({ collections: ['anime'] }), note: 'Expressive characters & shinobi' },
-      { label: 'Cinema & Movies', to: shopUrl({ collections: ['movies'] }), note: 'Cinematic vibes & cult classics' },
-      { label: 'Cars & Bikes', to: shopUrl({ collections: ['quotes'] }), note: 'Track-day & motorsport decals' },
-      { label: 'Gaming-Inspired', to: shopUrl({ collections: ['gaming'] }), note: 'Pixel art & controller icons' },
-      { label: 'Marvel & Superheroes', to: shopUrl({ collections: ['marvel'] }), note: 'Original hero emblems' },
-      { label: 'Cute & Aesthetic', to: shopUrl({ collections: ['cute'] }), note: 'Pastel doodles & cozy pets' },
-    ],
   },
   {
     id: 'about',
@@ -98,27 +91,8 @@ export const expandingNavItems: ExpandingNavItem[] = [
     to: '/about',
     subtitle: 'Made in Hyderabad',
     badge: 'Our Story',
-    image: '/category-art/custom.webp',
-    iconType: 'about',
-    sublinks: [
-      { label: 'Our Story & Studio', to: '/about', note: 'Student-run brand from Hyderabad' },
-      { label: 'Collector Passport', to: '/collector-passport', note: 'Collect stamps & unlock gifts' },
-      { label: 'Vote for Next Drop', to: '/vote-next-drop', note: 'Decide our next artwork' },
-    ],
-  },
-  {
-    id: 'contact',
-    label: 'Contact',
-    to: '/contact',
-    subtitle: 'WhatsApp & Help',
-    badge: 'Online',
     image: '/category-art/gifts.webp',
-    iconType: 'contact',
-    sublinks: [
-      { label: 'Direct WhatsApp Chat', to: '/contact', note: 'Instant responses from founders' },
-      { label: 'Frequently Asked Questions', to: '/faq', note: 'Shipping, sizing & prints' },
-      { label: 'Shipping & Delivery Policy', to: '/policies/shipping', note: 'Fast pan-India dispatch' },
-    ],
+    iconType: 'about',
   },
 ];
 
@@ -164,7 +138,6 @@ export function vibeLinks(category: Category): MenuLink[] {
 }
 
 export const plainLinks: MenuLink[] = [
-  { label: 'Shop by Video', to: '/shop-by-video' },
   { label: 'Collectibles', to: '/collectibles' },
   { label: 'Create your own', to: '/create-your-stickers' },
   { label: 'Vibes', to: '/vibes' },

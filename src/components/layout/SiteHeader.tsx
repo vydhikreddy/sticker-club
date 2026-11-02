@@ -1,24 +1,31 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
-  LuArrowRight,
-  LuClapperboard,
+  LuChevronDown,
   LuCompass,
   LuHeartHandshake,
-  LuHouse,
+  LuImage,
+  LuImagePlus,
   LuMenu,
-  LuMessageCircle,
+  LuPackage,
   LuSearch,
   LuShoppingBag,
   LuSparkles,
   LuX,
-  LuChevronDown,
 } from 'react-icons/lu';
 import { brand } from '../../config/brand';
-import { expandingNavItems, type ExpandingNavItem } from '../../config/navigation';
+import {
+  megaMenus,
+  originalNavItems,
+  vibeLinks,
+  type MegaMenu,
+  type NavItemConfig,
+} from '../../config/navigation';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useLocation, useNavigate } from '../../router/router';
-import { shopUrl } from '../../utils/catalogue';
+import { getProductBySlug, shopUrl } from '../../utils/catalogue';
+import { formatPrice } from '../../utils/format';
+import { ProductImage } from '../art/ProductArt';
 
 function Wordmark() {
   return (
@@ -42,20 +49,20 @@ function Wordmark() {
   );
 }
 
-function NavIcon({ type, className = 'size-4' }: { type: ExpandingNavItem['iconType']; className?: string }) {
+function NavIcon({ type, className = 'size-3.5' }: { type: NavItemConfig['iconType']; className?: string }) {
   switch (type) {
-    case 'home':
-      return <LuHouse className={className} />;
-    case 'shop':
-      return <LuShoppingBag className={className} />;
-    case 'video':
-      return <LuClapperboard className={className} />;
+    case 'stickers':
+      return <LuSparkles className={className} />;
+    case 'posters':
+      return <LuImage className={className} />;
+    case 'collectibles':
+      return <LuPackage className={className} />;
+    case 'create':
+      return <LuImagePlus className={className} />;
     case 'vibes':
       return <LuCompass className={className} />;
     case 'about':
       return <LuHeartHandshake className={className} />;
-    case 'contact':
-      return <LuMessageCircle className={className} />;
     default:
       return <LuSparkles className={className} />;
   }
@@ -74,7 +81,7 @@ function SearchForm({ onDone, autoFocus }: { onDone?: () => void; autoFocus?: bo
   return (
     <form role="search" onSubmit={submit} className="relative w-full">
       <label htmlFor="site-search" className="sr-only">
-        Search stickers, posters and collections
+        Search stickers and posters
       </label>
       <LuSearch aria-hidden className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-ink-soft" />
       <input
@@ -83,22 +90,90 @@ function SearchForm({ onDone, autoFocus }: { onDone?: () => void; autoFocus?: bo
         value={q}
         onChange={(e) => setQ(e.target.value)}
         autoFocus={autoFocus}
-        placeholder="Search anime, chai, coding, cars, A3 posters…"
+        placeholder="Search chai, coding, cars, A3 posters…"
         className="w-full rounded-full border border-mint/20 bg-paper px-4 py-2.5 pl-11 text-sm text-ink outline-none placeholder:text-ink-soft/60 focus:border-mint focus:ring-1 focus:ring-mint"
       />
     </form>
   );
 }
 
+/** Original mega dropdown panel for Stickers or Posters on desktop */
+function MegaPanel({ menu }: { menu: MegaMenu }) {
+  const promo = getProductBySlug(menu.promoSlug);
+  return (
+    <div className="mx-auto grid max-w-7xl gap-8 px-6 py-7 lg:grid-cols-[1fr_1.4fr_260px]">
+      <div>
+        <p className="eyebrow mb-3">Formats</p>
+        <ul className="space-y-1">
+          <li>
+            <Link
+              to={menu.allLink.to}
+              className="block rounded-xl px-3 py-2 font-display text-xl font-extrabold hover:bg-lime text-ink transition-colors"
+            >
+              {menu.allLink.label} →
+            </Link>
+          </li>
+          {menu.formats.map((f) => (
+            <li key={f.label}>
+              <Link to={f.to} className="block rounded-xl px-3 py-2 hover:bg-paper text-ink transition-colors">
+                <span className="font-bold text-sm">{f.label}</span>
+                {f.note && <span className="block text-xs text-ink-soft">{f.note}</span>}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        {menu.pills && (
+          <div className="mb-6">
+            <p className="eyebrow mb-3">{menu.pills.title}</p>
+            <div className="flex flex-wrap gap-2">
+              {menu.pills.links.map((l) => (
+                <Link key={l.label} to={l.to} className="chip px-4">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+        <p className="eyebrow mb-3">Shop {menu.label.toLowerCase()} by vibe</p>
+        <div className="flex flex-wrap gap-2">
+          {vibeLinks(menu.id).map((l) => (
+            <Link key={l.label} to={l.to} className="chip">
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {promo && (
+        <Link
+          to={`/product/${promo.slug}`}
+          className="group block overflow-hidden rounded-[var(--radius-card)] border border-mint/20 bg-paper shadow-lg hover:border-mint/50 transition-all"
+        >
+          <ProductImage product={promo} className="aspect-[4/3] w-full transition-transform duration-300 group-hover:scale-[1.03]" />
+          <div className="p-3">
+            <p className="text-[10px] font-mono font-bold tracking-wide text-mint uppercase">{menu.promoLabel}</p>
+            <p className="font-bold text-sm text-ink mt-0.5">
+              {promo.name} · {formatPrice(promo.price)}
+            </p>
+          </div>
+        </Link>
+      )}
+    </div>
+  );
+}
+
 export function SiteHeader() {
   const { itemCount, openCart } = useCart();
   const { user } = useAuth();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const params = new URLSearchParams(search);
   const navigate = useNavigate();
 
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [tappedId, setTappedId] = useState<string | null>(null);
-  const [openSubmenuId, setOpenSubmenuId] = useState<string | null>(null);
+  const [openMega, setOpenMega] = useState<string | null>(null);
   const [mobileExpandedId, setMobileExpandedId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -106,14 +181,13 @@ export function SiteHeader() {
   const hoverTimer = useRef<number | undefined>(undefined);
   const menuButton = useRef<HTMLButtonElement>(null);
 
-  // Close menus and panels on route change
+  // Close everything on page change
   useEffect(() => {
     setMenuOpen(false);
     setSearchOpen(false);
+    setOpenMega(null);
     setHoveredId(null);
-    setTappedId(null);
-    setOpenSubmenuId(null);
-  }, [pathname]);
+  }, [pathname, search]);
 
   // Handle escape key
   useEffect(() => {
@@ -124,42 +198,32 @@ export function SiteHeader() {
           menuButton.current?.focus();
         }
         setSearchOpen(false);
+        setOpenMega(null);
         setHoveredId(null);
-        setTappedId(null);
-        setOpenSubmenuId(null);
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [menuOpen]);
 
-  const isItemActive = (item: ExpandingNavItem): boolean => {
-    if (item.id === 'home') return pathname === '/';
-    if (item.id === 'shop') {
-      return (
-        pathname === '/shop' ||
-        pathname.startsWith('/product') ||
-        pathname === '/build-your-pack' ||
-        pathname === '/build-your-wall' ||
-        pathname === '/create-your-stickers' ||
-        pathname === '/collectibles'
-      );
-    }
-    if (item.id === 'video') return pathname === '/shop-by-video';
-    if (item.id === 'vibes') return pathname === '/vibes';
+  const isItemActive = (item: NavItemConfig): boolean => {
+    if (item.id === 'stickers') return pathname === '/shop' && params.get('category') === 'stickers';
+    if (item.id === 'posters') return pathname === '/shop' && params.get('category') === 'posters';
+    if (item.id === 'collectibles') return pathname === '/collectibles' || pathname.startsWith('/matching-duos') || pathname.startsWith('/secret-messages');
+    if (item.id === 'create') return pathname === '/create-your-stickers' || pathname === '/build-your-wall' || pathname === '/build-your-pack';
+    if (item.id === 'vibes') return pathname === '/vibes' || (pathname === '/shop' && Boolean(params.get('collections')));
     if (item.id === 'about') return pathname === '/about' || pathname === '/collector-passport' || pathname === '/vote-next-drop';
-    if (item.id === 'contact') return pathname === '/contact' || pathname === '/faq' || pathname.startsWith('/policies');
     return pathname === item.to;
   };
 
   const handleMouseEnter = (id: string) => {
     window.clearTimeout(hoverTimer.current);
     setHoveredId(id);
-    const item = expandingNavItems.find((n) => n.id === id);
-    if (item?.sublinks?.length) {
-      setOpenSubmenuId(id);
+    const item = originalNavItems.find((n) => n.id === id);
+    if (item?.isMegaMenu) {
+      setOpenMega(id);
     } else {
-      setOpenSubmenuId(null);
+      setOpenMega(null);
     }
   };
 
@@ -167,27 +231,17 @@ export function SiteHeader() {
     window.clearTimeout(hoverTimer.current);
     hoverTimer.current = window.setTimeout(() => {
       setHoveredId(null);
-      setTappedId(null);
-      setOpenSubmenuId(null);
+      setOpenMega(null);
     }, 180);
   };
 
-  const handleNavClick = (item: ExpandingNavItem, e: React.MouseEvent) => {
-    // If on a touch-first device and not yet expanded, expand on first tap
-    if (hoveredId === item.id || tappedId === item.id || !item.sublinks?.length) {
-      navigate(item.to);
-      setOpenSubmenuId(null);
-      setHoveredId(null);
-      setTappedId(null);
-    } else {
-      e.preventDefault();
-      setTappedId(item.id);
-      setHoveredId(item.id);
-      setOpenSubmenuId(item.id);
-    }
+  const handleNavClick = (item: NavItemConfig) => {
+    navigate(item.to);
+    setOpenMega(null);
+    setHoveredId(null);
   };
 
-  const activeSubmenuItem = expandingNavItems.find((item) => item.id === openSubmenuId && item.sublinks?.length);
+  const activeMega = megaMenus.find((m) => m.id === openMega);
 
   return (
     <header
@@ -212,13 +266,13 @@ export function SiteHeader() {
         {/* Brand Wordmark */}
         <Wordmark />
 
-        {/* DESKTOP INTERACTIVE EXPANDING NAVIGATION BAR */}
+        {/* DESKTOP INTERACTIVE EXPANDING NAVIGATION BAR (Original items: Stickers, Posters, Collectibles, Create, Vibes, About) */}
         <nav
           aria-label="Main Navigation"
           className="hidden lg:flex items-center justify-center flex-1 max-w-2xl mx-2"
         >
           <ul className="flex items-center gap-1.5 p-1 rounded-full border border-mint/15 bg-paper/70 backdrop-blur-xl shadow-inner">
-            {expandingNavItems.map((item) => {
+            {originalNavItems.map((item) => {
               const active = isItemActive(item);
               const isHovered = hoveredId === item.id;
               const hasAnyHover = hoveredId !== null;
@@ -233,19 +287,19 @@ export function SiteHeader() {
                   className="relative nav-expand-spring"
                   style={{
                     width: isHovered
-                      ? '215px'
+                      ? '205px'
                       : hasAnyHover
                       ? '70px'
-                      : '84px',
+                      : '86px',
                   }}
                   onMouseEnter={() => handleMouseEnter(item.id)}
                   onFocus={() => handleMouseEnter(item.id)}
                 >
                   <button
                     type="button"
-                    onClick={(e) => handleNavClick(item, e)}
+                    onClick={() => handleNavClick(item)}
                     aria-current={active ? 'page' : undefined}
-                    aria-expanded={openSubmenuId === item.id}
+                    aria-expanded={openMega === item.id}
                     className={`group relative flex h-10 w-full items-center overflow-hidden rounded-full px-2.5 transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] text-left outline-none ${
                       isHovered
                         ? 'border border-mint/45 bg-paper-deep/95 shadow-[0_4px_20px_rgba(0,0,0,0.6),0_0_15px_rgba(168,240,220,0.15)] ring-1 ring-mint/30'
@@ -319,12 +373,12 @@ export function SiteHeader() {
                       </p>
                     </div>
 
-                    {/* Chevron for items with sublinks */}
-                    {item.sublinks?.length && isHovered && (
+                    {/* Chevron for mega menu items */}
+                    {item.isMegaMenu && isHovered && (
                       <LuChevronDown
                         aria-hidden
                         className={`relative z-10 size-3 shrink-0 text-mint/80 transition-transform duration-200 ${
-                          openSubmenuId === item.id ? 'rotate-180' : ''
+                          openMega === item.id ? 'rotate-180' : ''
                         }`}
                       />
                     )}
@@ -369,81 +423,43 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Floating Submenu Dropdown Card (Desktop) */}
-      {activeSubmenuItem && (
+      {/* Desktop Mega Dropdown Panel (for Stickers or Posters) */}
+      {activeMega && (
         <div
-          role="region"
-          aria-label={`${activeSubmenuItem.label} sub-navigation`}
-          className="fade-in absolute left-1/2 -translate-x-1/2 top-[calc(100%+0.5rem)] z-50 w-full max-w-xl rounded-2xl border border-mint/25 bg-paper-deep/95 p-4 shadow-[0_20px_48px_-10px_rgba(0,0,0,0.8),0_0_24px_rgba(168,240,220,0.12)] backdrop-blur-2xl"
-          onMouseEnter={() => setOpenSubmenuId(activeSubmenuItem.id)}
+          id="mega-panel"
+          className="fade-in absolute inset-x-3 sm:inset-x-6 top-[calc(100%+0.5rem)] hidden rounded-2xl border border-mint/20 bg-paper-deep/95 shadow-2xl backdrop-blur-2xl lg:block overflow-hidden z-50"
+          onMouseEnter={() => setOpenMega(activeMega.id)}
           onMouseLeave={handleMouseLeave}
         >
-          <div className="flex items-center justify-between border-b border-mint/15 pb-2.5 mb-3">
-            <div className="flex items-center gap-2">
-              <span className="grid size-6 place-items-center rounded-full bg-mint text-on-light">
-                <NavIcon type={activeSubmenuItem.iconType} className="size-3" />
-              </span>
-              <span className="font-display text-sm font-bold text-ink">
-                {activeSubmenuItem.label} Destinations
-              </span>
-              <span className="rounded-full bg-cinema-red px-2 py-0.2 text-[9px] font-mono font-bold text-ink uppercase">
-                {activeSubmenuItem.badge}
-              </span>
-            </div>
-            <Link
-              to={activeSubmenuItem.to}
-              className="text-xs font-bold text-mint hover:underline inline-flex items-center gap-1"
-            >
-              Explore all {activeSubmenuItem.label.toLowerCase()} <LuArrowRight className="size-3" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {activeSubmenuItem.sublinks?.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="group flex flex-col rounded-xl border border-mint/10 bg-white/5 p-2.5 transition-all duration-200 hover:border-mint/40 hover:bg-white/10 hover:-translate-y-0.5"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-ink group-hover:text-mint transition-colors">
-                    {link.label}
-                  </span>
-                  <LuArrowRight className="size-3 text-ink-soft opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                {link.note && (
-                  <span className="text-[10px] text-ink-soft mt-0.5 line-clamp-1">{link.note}</span>
-                )}
-              </Link>
-            ))}
-          </div>
+          <MegaPanel menu={activeMega} />
         </div>
       )}
 
       {/* Search Bar Flyout */}
       {searchOpen && (
-        <div className="fade-in absolute inset-x-3 sm:inset-x-6 top-[calc(100%+0.5rem)] rounded-2xl border border-mint/20 bg-paper-deep/95 p-3.5 shadow-2xl backdrop-blur-2xl">
+        <div className="fade-in absolute inset-x-3 sm:inset-x-6 top-[calc(100%+0.5rem)] rounded-2xl border border-mint/20 bg-paper-deep/95 p-3.5 shadow-2xl backdrop-blur-2xl z-50">
           <div className="mx-auto max-w-2xl">
             <SearchForm autoFocus onDone={() => setSearchOpen(false)} />
           </div>
         </div>
       )}
 
-      {/* MOBILE INTERACTIVE ACCORDION DRAWER */}
+      {/* MOBILE INTERACTIVE ACCORDION DRAWER (Original Items) */}
       {menuOpen && (
         <nav
           id="mobile-nav"
           aria-label="Mobile Navigation"
-          className="fade-in absolute inset-x-3 top-[calc(100%+0.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto rounded-3xl border border-mint/20 bg-paper-deep/95 p-4 shadow-2xl backdrop-blur-2xl lg:hidden"
+          className="fade-in absolute inset-x-3 top-[calc(100%+0.5rem)] max-h-[calc(100vh-5.5rem)] overflow-y-auto rounded-3xl border border-mint/20 bg-paper-deep/95 p-4 shadow-2xl backdrop-blur-2xl lg:hidden z-50"
         >
           <div className="space-y-2">
             <div className="mb-3 px-1">
               <SearchForm onDone={() => setMenuOpen(false)} />
             </div>
 
-            {expandingNavItems.map((item) => {
+            {originalNavItems.map((item) => {
               const active = isItemActive(item);
               const isExpanded = mobileExpandedId === item.id;
+              const mega = megaMenus.find((m) => m.id === item.id);
               const imgSrc =
                 item.image.startsWith('http') || item.image.startsWith(import.meta.env.BASE_URL)
                   ? item.image
@@ -454,7 +470,7 @@ export function SiteHeader() {
                   key={item.id}
                   className="overflow-hidden rounded-2xl border border-mint/20 bg-white/5 transition-all duration-200"
                 >
-                  {/* Item Header Button */}
+                  {/* Card Header Row */}
                   <div className="relative flex items-center justify-between p-3">
                     {/* Background thumbnail */}
                     <div className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
@@ -490,12 +506,12 @@ export function SiteHeader() {
                       </div>
                     </Link>
 
-                    {item.sublinks?.length && (
+                    {mega && (
                       <button
                         type="button"
                         onClick={() => setMobileExpandedId(isExpanded ? null : item.id)}
                         className="relative z-10 grid size-8 place-items-center rounded-full bg-white/10 text-mint"
-                        aria-label={`Expand ${item.label} submenu`}
+                        aria-label={`Expand ${item.label} formats`}
                         aria-expanded={isExpanded}
                       >
                         <LuChevronDown
@@ -507,23 +523,25 @@ export function SiteHeader() {
                     )}
                   </div>
 
-                  {/* Expanded Submenu Accordion */}
-                  {item.sublinks?.length && isExpanded && (
+                  {/* Expanded Submenu Accordion for Stickers / Posters */}
+                  {mega && isExpanded && (
                     <div className="border-t border-mint/15 bg-paper/60 px-3 py-2.5 space-y-1.5 animate-fade-in">
-                      {item.sublinks.map((sublink) => (
+                      <Link
+                        to={mega.allLink.to}
+                        onClick={() => setMenuOpen(false)}
+                        className="block rounded-lg bg-lime px-3 py-1.5 text-xs font-extrabold text-ink"
+                      >
+                        {mega.allLink.label} →
+                      </Link>
+                      {mega.formats.map((f) => (
                         <Link
-                          key={sublink.to}
-                          to={sublink.to}
+                          key={f.label}
+                          to={f.to}
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-center justify-between rounded-xl p-2 text-xs font-bold text-ink hover:bg-white/10 hover:text-mint transition-colors"
+                          className="flex items-center justify-between rounded-lg px-2 py-1.5 text-xs font-bold text-ink hover:bg-white/10 hover:text-mint transition-colors"
                         >
-                          <div>
-                            <p>{sublink.label}</p>
-                            {sublink.note && (
-                              <p className="text-[10px] text-ink-soft font-normal">{sublink.note}</p>
-                            )}
-                          </div>
-                          <LuArrowRight className="size-3 text-mint shrink-0" />
+                          <span>{f.label}</span>
+                          {f.note && <span className="text-[10px] text-ink-soft">{f.note}</span>}
                         </Link>
                       ))}
                     </div>
